@@ -1,11 +1,11 @@
 /**
- * API Route para obtener el balance de una cuenta en Casper.
+ * API Route to get account balance on Casper.
  * 
- * Este endpoint permite obtener el balance de CSPR de una cuenta
- * usando su clave pública.
+ * This endpoint allows getting the CSPR balance of an account
+ * using its public key.
  * 
- * Runtime: Node.js (no Edge)
- * Método: GET
+ * Runtime: Node.js (not Edge)
+ * Method: GET
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -13,34 +13,34 @@ import { casperClient } from '@/lib/casper/client';
 import { CLPublicKey } from 'casper-js-sdk';
 
 /**
- * Configuración del runtime para Node.js
+ * Runtime configuration for Node.js
  */
 export const runtime = 'nodejs';
 
 /**
- * Tipos para el response exitoso
+ * Types for successful response
  */
 interface BalanceResponse {
-  balance: string; // Balance en motes
-  balanceCSPR: string; // Balance en CSPR (formateado)
+  balance: string; // Balance in motes
+  balanceCSPR: string; // Balance in CSPR (formatted)
   publicKey: string;
 }
 
 /**
- * Tipos para el response de error
+ * Types for error response
  */
 interface BalanceErrorResponse {
   error: string;
 }
 
 /**
- * Handler GET para obtener el balance de una cuenta.
+ * GET handler to get account balance.
  * 
  * Query params:
- * - publicKey: Clave pública de la cuenta (requerido)
+ * - publicKey: Account public key (required)
  * 
- * @param request - Request de Next.js
- * @returns Response con balance o error
+ * @param request - Next.js request
+ * @returns Response with balance or error
  */
 export async function GET(
   request: NextRequest
@@ -52,23 +52,23 @@ export async function GET(
 
     if (!publicKeyHex) {
       return NextResponse.json(
-        { error: 'El parámetro publicKey es requerido' },
+        { error: 'publicKey parameter is required' },
         { status: 400 }
       );
     }
 
-    // Validar y crear CLPublicKey
+    // Validate and create CLPublicKey
     let publicKey: CLPublicKey;
     try {
       publicKey = CLPublicKey.fromHex(publicKeyHex);
     } catch (error) {
       return NextResponse.json(
-        { error: 'La clave pública tiene un formato inválido' },
+        { error: 'Public key has invalid format' },
         { status: 400 }
       );
     }
 
-    // Obtener el balance desde la red
+    // Get balance from network
     let balanceMotes: string;
     try {
       const balanceResult = await casperClient.balanceOfByPublicKey(publicKey);
