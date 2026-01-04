@@ -46,7 +46,7 @@ export async function GET(
   request: NextRequest
 ): Promise<NextResponse<BalanceResponse | BalanceErrorResponse>> {
   try {
-    // Obtener publicKey de los query params
+    // Get publicKey from query params
     const searchParams = request.nextUrl.searchParams;
     const publicKeyHex = searchParams.get('publicKey');
 
@@ -99,11 +99,11 @@ export async function GET(
       }
 
     // Convert motes to CSPR (1 CSPR = 1,000,000,000 motes)
-    // Manejar números grandes correctamente
+    // Handle large numbers correctly
     const balanceBigInt = BigInt(balanceMotes);
     const csprBalance = Number(balanceBigInt) / 1_000_000_000;
     
-    // Formatear con más decimales si es necesario, pero mostrar hasta 2 decimales
+    // Format with more decimals if needed, but show up to 2 decimal places
     const balanceCSPR = csprBalance.toFixed(2);
 
     return NextResponse.json(
@@ -117,7 +117,7 @@ export async function GET(
   } catch (error) {
     const errorMessage = error instanceof Error
       ? error.message
-      : 'Error inesperado al procesar la solicitud';
+      : 'Unexpected error processing request';
 
     return NextResponse.json(
       { error: errorMessage },
