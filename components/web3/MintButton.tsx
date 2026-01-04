@@ -48,7 +48,7 @@ interface MintButtonProps {
 }
 
 /**
- * Componente MintButton para acciones gasless
+ * MintButton component for gasless actions
  */
 export function MintButton({ 
   label = 'Mint (Gas 0)', 
@@ -225,13 +225,13 @@ export function MintButton({
   };
 
   /**
-   * Maneja el click del botón
+   * Handles button click
    */
   const handleMint = async () => {
     if (!publicKey) {
       setState('error');
-      setErrorMessage('No hay wallet conectada. Por favor, conéctate primero usando el botón "Connect Wallet" en la esquina superior derecha.');
-      onError?.('No hay wallet conectada');
+      setErrorMessage('No wallet connected. Please connect first using the "Connect Wallet" button in the top right corner.');
+      onError?.('No wallet connected');
       return;
     }
 
@@ -286,13 +286,13 @@ export function MintButton({
       // Casper Wallet puede retornar el deploy firmado completo o solo la firma
       const wallet = getCasperWallet();
       if (!wallet) {
-        throw new Error('No se encontró wallet disponible. Por favor, instala Casper Wallet o CSPR.click.');
+        throw new Error('No wallet found. Please install Casper Wallet or CSPR.click.');
       }
 
       if (!wallet.sign || typeof wallet.sign !== 'function') {
         throw new Error(
-          'La wallet no tiene el método sign disponible. ' +
-          'Por favor, asegúrate de tener Casper Wallet instalada y conectada.'
+          'Wallet does not have sign method available. ' +
+          'Please make sure you have Casper Wallet installed and connected.'
         );
       }
 
@@ -558,17 +558,17 @@ export function MintButton({
         {getButtonContent()}
       </button>
 
-      {/* Mensaje de error */}
+      {/* Error message */}
       {state === 'error' && errorMessage && (
         <div className="text-sm text-red-600 dark:text-red-400 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
           {errorMessage}
         </div>
       )}
 
-      {/* Deploy hash cuando es exitoso */}
+      {/* Deploy hash when successful */}
       {state === 'submitted' && deployHash && (
         <div className="text-sm text-green-600 dark:text-green-400 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-          <div className="font-semibold mb-1">✅ NFT Mintado Exitosamente!</div>
+          <div className="font-semibold mb-1">✅ NFT Minted Successfully!</div>
           <div className="text-xs mb-2">Deploy Hash:</div>
           <div className="font-mono break-all text-xs">{deployHash}</div>
           <a
@@ -577,15 +577,15 @@ export function MintButton({
             rel="noopener noreferrer"
             className="text-xs underline mt-2 inline-block"
           >
-            Ver en el explorador →
+            View on explorer →
           </a>
         </div>
       )}
 
-      {/* Estado de conexión */}
+      {/* Connection status */}
       {!publicKey && (
         <div className="text-xs text-gray-500 dark:text-gray-400 text-center p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          Conecta tu wallet para continuar
+          Connect your wallet to continue
         </div>
       )}
     </div>

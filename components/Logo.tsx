@@ -1,6 +1,6 @@
 /**
- * Logo de Invisible Casper - NFT Mint
- * Logo con temática de NFT mint y estética invisible/ghost
+ * Invisible Casper Logo - NFT Mint
+ * Logo with NFT mint theme and invisible/ghost aesthetic
  */
 
 import React from 'react';

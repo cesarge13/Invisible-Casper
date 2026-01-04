@@ -88,17 +88,17 @@ export async function GET(
         balanceMotes = String(balanceResult);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Error desconocido al obtener el balance';
+        const errorMessage = error instanceof Error 
+          ? error.message 
+          : 'Unknown error getting balance';
+        
+        return NextResponse.json(
+          { error: `Error getting balance: ${errorMessage}` },
+          { status: 500 }
+        );
+      }
 
-      return NextResponse.json(
-        { error: `Error al obtener el balance: ${errorMessage}` },
-        { status: 500 }
-      );
-    }
-
-    // Convertir motes a CSPR (1 CSPR = 1,000,000,000 motes)
+    // Convert motes to CSPR (1 CSPR = 1,000,000,000 motes)
     // Manejar números grandes correctamente
     const balanceBigInt = BigInt(balanceMotes);
     const csprBalance = Number(balanceBigInt) / 1_000_000_000;

@@ -1,12 +1,12 @@
 'use client';
 
 /**
- * Página de dashboard con funcionalidades de Casper.
+ * Dashboard page with Casper functionality.
  * 
- * Incluye:
- * - Información de la cuenta conectada
- * - Transferencias de CSPR
- * - Creación y envío de deploys patrocinados
+ * Includes:
+ * - Connected account information
+ * - CSPR transfers
+ * - Sponsored deploy creation and submission
  */
 
 import { WalletNav, getCasperWallet } from "@/components/web3/WalletNav";
@@ -17,7 +17,7 @@ import { DeployUtil, CLPublicKey } from "casper-js-sdk";
 import { createTransferDeploy } from "@/lib/casper/transfer";
 import Link from "next/link";
 
-// Variable para almacenar la configuración pública
+// Variable to store public configuration
 let publicConfig: { sponsorPublicKey: string; networkName: string } | null = null;
 
 export default function Dashboard() {
@@ -28,9 +28,9 @@ export default function Dashboard() {
   const [transferStatus, setTransferStatus] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Obtener configuración pública y public key de la wallet conectada
+  // Get public configuration and public key from connected wallet
   useEffect(() => {
-    // Cargar configuración pública
+    // Load public configuration
     const loadConfig = async () => {
       try {
         const response = await fetch('/api/config');
@@ -62,14 +62,14 @@ export default function Dashboard() {
     };
 
     checkWallet();
-    // Solo verificar cada 30 segundos (menos frecuente)
+    // Only check every 30 seconds (less frequent)
     const interval = setInterval(checkWallet, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // getCasperWallet ya está importado desde WalletNav
+  // getCasperWallet is already imported from WalletNav
 
-  // Obtener balance
+  // Get balance
   const fetchBalance = async (publicKeyToFetch: string) => {
     try {
       const response = await fetch(`/api/balance?publicKey=${encodeURIComponent(publicKeyToFetch)}`);
@@ -82,56 +82,56 @@ export default function Dashboard() {
     }
   };
 
-  // Crear y enviar transferencia usando el sistema de patrocinio
+  // Create and send transfer using the sponsorship system
   const handleTransfer = async () => {
     if (!publicKey || !transferAmount || !transferRecipient) {
-      setTransferStatus('❌ Por favor completa todos los campos');
+      setTransferStatus('❌ Please fill in all fields');
       return;
     }
 
     const wallet = getCasperWallet();
     if (!wallet) {
-      setTransferStatus('❌ Error: Wallet no conectada');
+      setTransferStatus('❌ Error: Wallet not connected');
       return;
     }
 
     setIsLoading(true);
-    setTransferStatus('Creando deploy de transferencia...');
+    setTransferStatus('Creating transfer deploy...');
 
     try {
-      // Validar cantidad
+      // Validate amount
       const amount = parseFloat(transferAmount);
       if (isNaN(amount) || amount <= 0) {
-        setTransferStatus('❌ La cantidad debe ser un número mayor a 0');
+        setTransferStatus('❌ Amount must be a number greater than 0');
         setIsLoading(false);
         return;
       }
 
-      // Validar clave pública del destinatario
+      // Validate recipient public key
       try {
         CLPublicKey.fromHex(transferRecipient);
       } catch {
-        setTransferStatus('❌ La clave pública del destinatario no es válida');
+        setTransferStatus('❌ Recipient public key is invalid');
         setIsLoading(false);
         return;
       }
 
-      setTransferStatus('Creando deploy...');
+      setTransferStatus('Creating deploy...');
 
-      // 1. Obtener la configuración del sponsor
+      // 1. Get sponsor configuration
       if (!publicConfig) {
         const configResponse = await fetch('/api/config');
         if (!configResponse.ok) {
-          throw new Error('No se pudo obtener la configuración del sponsor');
+          throw new Error('Could not get sponsor configuration');
         }
         publicConfig = await configResponse.json();
       }
 
       if (!publicConfig) {
-        throw new Error('No se pudo obtener la configuración del sponsor');
+        throw new Error('Could not get sponsor configuration');
       }
 
-      // 2. Crear el deploy de transferencia (retorna JSON con payer configurado)
+      // 2. Create transfer deploy (returns JSON with payer configured)
       const deployJson = createTransferDeploy(
         publicKey,
         transferRecipient,
@@ -140,35 +140,35 @@ export default function Dashboard() {
         publicConfig.sponsorPublicKey
       );
 
-      setTransferStatus('Firmando deploy con tu wallet...');
+      setTransferStatus('Signing deploy with your wallet...');
 
-      // 3. Rehidratar el deploy desde JSON para firmarlo
+      // 3. Rehydrate deploy from JSON to sign it
       const deployResult = DeployUtil.deployFromJson(deployJson);
-      // deployFromJson retorna Result<Deploy, Error>
+      // deployFromJson returns Result<Deploy, Error>
       let deploy: DeployUtil.Deploy;
       try {
         deploy = deployResult.unwrap();
       } catch (error) {
-        throw new Error(`Error al crear el deploy: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(`Error creating deploy: ${error instanceof Error ? error.message : String(error)}`);
       }
 
-      // 4. Firmar el deploy con la wallet del usuario
+      // 4. Sign deploy with user's wallet
       if (!wallet.signDeploy) {
-        throw new Error('La wallet no tiene el método signDeploy disponible');
+        throw new Error('Wallet does not have signDeploy method available');
       }
 
       const signedDeploy = await wallet.signDeploy(deploy, publicKey);
       
       if (!signedDeploy) {
-        throw new Error('Error al firmar el deploy');
+        throw new Error('Error signing deploy');
       }
 
-      setTransferStatus('Enviando deploy patrocinado...');
+      setTransferStatus('Sending sponsored deploy...');
 
-      // 5. Convertir a JSON para enviar al servidor
+      // 5. Convert to JSON to send to server
       const signedDeployJson = DeployUtil.deployToJson(signedDeploy);
 
-      // 5. Enviar al sistema de patrocinio
+      // 5. Send to sponsorship system
       const response = await fetch('/api/sponsor', {
         method: 'POST',
         headers: {
@@ -181,18 +181,18 @@ export default function Dashboard() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Error al enviar el deploy');
+        throw new Error(error.error || 'Error sending deploy');
       }
 
       const result = await response.json();
       
-      setTransferStatus(`✅ Transferencia enviada exitosamente! Hash: ${result.deployHash}`);
+      setTransferStatus(`✅ Transfer sent successfully! Hash: ${result.deployHash}`);
       
-      // Limpiar formulario
+      // Clear form
       setTransferAmount('');
       setTransferRecipient('');
       
-      // Actualizar balance después de unos segundos
+      // Update balance after a few seconds
       setTimeout(() => {
         if (publicKey) {
           fetchBalance(publicKey);
@@ -200,7 +200,7 @@ export default function Dashboard() {
       }, 3000);
       
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setTransferStatus(`❌ Error: ${errorMessage}`);
     } finally {
       setIsLoading(false);
@@ -218,15 +218,15 @@ export default function Dashboard() {
           <WalletNav />
         </div>
 
-        {/* Información de la cuenta */}
+        {/* Account Information */}
         {publicKey && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-              Información de la Cuenta
+              Account Information
             </h2>
             <div className="space-y-2">
               <div>
-                <span className="text-sm text-gray-600 dark:text-gray-400">Clave Pública:</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Public Key:</span>
                 <p className="font-mono text-sm break-all text-gray-900 dark:text-white">
                   {publicKey}
                 </p>
@@ -241,15 +241,15 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Transferencia de CSPR */}
+        {/* CSPR Transfer */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            Transferir CSPR
+            Transfer CSPR
           </h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Cantidad (CSPR)
+                Amount (CSPR)
               </label>
               <input
                 type="number"
@@ -263,7 +263,7 @@ export default function Dashboard() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Destinatario (Clave Pública)
+                Recipient (Public Key)
               </label>
               <input
                 type="text"
@@ -279,7 +279,7 @@ export default function Dashboard() {
               disabled={isLoading || !publicKey || !transferAmount || !transferRecipient}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
             >
-              {isLoading ? 'Procesando...' : 'Transferir'}
+              {isLoading ? 'Processing...' : 'Transfer'}
             </button>
             {transferStatus && (
               <div className={`p-3 rounded-lg text-sm ${
@@ -306,15 +306,15 @@ export default function Dashboard() {
                 NFT Mint (Gasless)
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Crea y mintea NFTs sin pagar fees de gas
+                Create and mint NFTs without paying gas fees
               </p>
             </div>
           </div>
           <MintButton 
             label="Mint NFT (Gas 0)"
             onSuccess={(hash) => {
-              setTransferStatus(`✅ NFT minted exitosamente! Hash: ${hash}`);
-              // Actualizar balance después de unos segundos
+              setTransferStatus(`✅ NFT minted successfully! Hash: ${hash}`);
+              // Update balance after a few seconds
               setTimeout(() => {
                 if (publicKey) {
                   fetchBalance(publicKey);
@@ -322,23 +322,23 @@ export default function Dashboard() {
               }, 3000);
             }}
             onError={(error) => {
-              setTransferStatus(`❌ Error al mintear NFT: ${error}`);
+              setTransferStatus(`❌ Error minting NFT: ${error}`);
             }}
           />
         </div>
 
-        {/* Información adicional */}
+        {/* Additional Information */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            Funcionalidades Disponibles
+            Available Features
           </h2>
           <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-            <li>✅ Conexión con Casper Wallet</li>
-            <li>✅ Visualización de balance en tiempo real</li>
-            <li>✅ Transferencias de CSPR</li>
-            <li>✅ Sistema de patrocinio de deploys</li>
-            <li>✅ API para obtener balance de cuentas</li>
-            <li>✅ MintButton - Acciones gasless</li>
+            <li>✅ Casper Wallet connection</li>
+            <li>✅ Real-time balance display</li>
+            <li>✅ CSPR transfers</li>
+            <li>✅ Deploy sponsorship system</li>
+            <li>✅ API to get account balance</li>
+            <li>✅ MintButton - Gasless actions</li>
           </ul>
         </div>
       </div>

@@ -1,23 +1,23 @@
 /**
- * API Route para patrocinio de deploys en Casper.
+ * API Route for sponsoring deploys on Casper.
  * 
- * Este endpoint permite que el frontend envíe deploys para que sean
- * firmados y enviados por el sponsor (patrocinador).
+ * This endpoint allows the frontend to send deploys to be
+ * signed and submitted by the sponsor.
  * 
- * Runtime: Node.js (no Edge)
- * Método: POST únicamente
+ * Runtime: Node.js (not Edge)
+ * Method: POST only
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { SponsorService } from '@/lib/casper/sponsor';
 
 /**
- * Configuración del runtime para Node.js
+ * Runtime configuration for Node.js
  */
 export const runtime = 'nodejs';
 
 /**
- * Tipos para el request body
+ * Types for request body
  */
 interface SponsorRequest {
   deployJson: unknown;
@@ -26,31 +26,31 @@ interface SponsorRequest {
 }
 
 /**
- * Tipos para el response exitoso
+ * Types for successful response
  */
 interface SponsorResponse {
   deployHash: string;
 }
 
 /**
- * Tipos para el response de error
+ * Types for error response
  */
 interface SponsorErrorResponse {
   error: string;
 }
 
 /**
- * Handler POST para patrocinar deploys.
+ * POST handler to sponsor deploys.
  * 
- * Flujo:
- * 1. Parsea el body JSON del request
- * 2. Valida que exista payload (deploy JSON)
- * 3. Instancia SponsorService
- * 4. Llama sponsorService.signAsPayerAndSubmit(deployJson)
- * 5. Retorna Response JSON con deployHash
+ * Flow:
+ * 1. Parse request body JSON
+ * 2. Validate that payload (deploy JSON) exists
+ * 3. Instantiate SponsorService
+ * 4. Call sponsorService.signAsPayerAndSubmit(deployJson, signer, signature)
+ * 5. Return JSON Response with deployHash
  * 
- * @param request - Request de Next.js
- * @returns Response con deployHash o error
+ * @param request - Next.js request
+ * @returns Response with deployHash or error
  */
 export async function POST(
   request: NextRequest
@@ -63,50 +63,50 @@ export async function POST(
       body = await request.json();
     } catch (error) {
       return NextResponse.json(
-        { error: 'El body del request debe ser un JSON válido' },
+        { error: 'Request body must be valid JSON' },
         { status: 400 }
       );
     }
 
-    // Paso 2: Validar que existan todos los campos requeridos
+    // Step 2: Validate that all required fields exist
     if (!body.deployJson) {
       return NextResponse.json(
-        { error: 'El campo deployJson es requerido en el body del request' },
+        { error: 'deployJson field is required in request body' },
         { status: 400 }
       );
     }
 
     if (!body.signer || typeof body.signer !== 'string') {
       return NextResponse.json(
-        { error: 'El campo signer (clave pública del firmante) es requerido y debe ser un string' },
+        { error: 'signer field (signer public key) is required and must be a string' },
         { status: 400 }
       );
     }
 
     if (!body.signature || typeof body.signature !== 'string') {
       return NextResponse.json(
-        { error: 'El campo signature (firma hexadecimal) es requerido y debe ser un string' },
+        { error: 'signature field (hexadecimal signature) is required and must be a string' },
         { status: 400 }
       );
     }
 
-    // Validar formato de la firma (debe ser hex de 128 caracteres)
+    // Validate signature format (must be 128 character hex)
     if (!/^[0-9a-fA-F]{128}$/.test(body.signature)) {
       return NextResponse.json(
-        { error: 'La signature debe ser un string hexadecimal de 128 caracteres' },
+        { error: 'Signature must be a 128 character hexadecimal string' },
         { status: 400 }
       );
     }
 
-    // Validar que deployJson sea un objeto o string JSON válido
+    // Validate that deployJson is an object or valid JSON string
     if (typeof body.deployJson !== 'object' && typeof body.deployJson !== 'string') {
       return NextResponse.json(
-        { error: 'El campo deployJson debe ser un objeto JSON o un string JSON válido' },
+        { error: 'deployJson field must be a JSON object or valid JSON string' },
         { status: 400 }
       );
     }
 
-    // Paso 3: Instanciar SponsorService
+    // Step 3: Instantiate SponsorService
     let sponsorService: SponsorService;
     
     try {
@@ -114,15 +114,15 @@ export async function POST(
     } catch (error) {
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Error desconocido al inicializar SponsorService';
+        : 'Unknown error initializing SponsorService';
       
       return NextResponse.json(
-        { error: `Error de configuración: ${errorMessage}` },
+        { error: `Configuration error: ${errorMessage}` },
         { status: 500 }
       );
     }
 
-    // Paso 4: Llamar sponsorService.signAsPayerAndSubmit con deployJson, signer y signature
+    // Step 4: Call sponsorService.signAsPayerAndSubmit with deployJson, signer and signature
     let deployHash: string;
     
     try {
@@ -132,29 +132,29 @@ export async function POST(
         body.signature
       );
     } catch (error) {
-      // Si falla la validación, firma o envío, retornar error 500 con mensaje claro
+      // If validation, signing or submission fails, return 500 error with clear message
       const errorMessage = error instanceof Error 
         ? error.message 
-        : 'Error desconocido al procesar el deploy';
+        : 'Unknown error processing deploy';
       
-      // No filtrar información sensible en el response (según requisitos)
-      // pero asegurarse de que no exponemos claves privadas
+      // Do not filter sensitive information in response (per requirements)
+      // but ensure we don't expose private keys
       return NextResponse.json(
         { error: errorMessage },
         { status: 500 }
       );
     }
 
-    // Paso 5: Retornar Response JSON con deployHash
+    // Step 5: Return JSON Response with deployHash
     return NextResponse.json(
       { deployHash },
       { status: 200 }
     );
   } catch (error) {
-    // Manejo de errores inesperados
+    // Handle unexpected errors
     const errorMessage = error instanceof Error 
       ? error.message 
-      : 'Error inesperado al procesar la solicitud';
+      : 'Unexpected error processing request';
     
     return NextResponse.json(
       { error: errorMessage },
