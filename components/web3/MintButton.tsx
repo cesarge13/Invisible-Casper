@@ -68,7 +68,7 @@ export function MintButton({
 
   // getCasperWallet ya está importado desde WalletNav
 
-  // Obtener la clave pública del usuario (CSPR.click o Casper Wallet como fallback)
+  // Get user's public key (CSPR.click or Casper Wallet as fallback)
   useEffect(() => {
     const fetchPublicKey = async () => {
       // Esperar un momento para que la extensión se cargue completamente
@@ -87,8 +87,8 @@ export function MintButton({
         }
       }
 
-      // Intentar múltiples métodos para obtener la clave pública
-      // Método 1: window.casperlabsHelper directamente (más común)
+      // Try multiple methods to get the public key
+      // Method 1: window.casperlabsHelper directly (most common)
       const casperHelper = (window as any).casperlabsHelper;
       if (casperHelper && typeof casperHelper.getActivePublicKey === 'function') {
         try {
@@ -107,7 +107,7 @@ export function MintButton({
         }
       }
 
-      // Método 2: usar getCasperWallet()
+      // Method 2: use getCasperWallet()
       const wallet = getCasperWallet();
       if (wallet) {
         try {
@@ -239,7 +239,7 @@ export function MintButton({
       setState('signing');
       setErrorMessage(null);
 
-      // Paso 1: Crear el deploy de mint de NFT (retorna DeployUtil.Deploy directamente)
+      // Step 1: Create NFT mint deploy (returns DeployUtil.Deploy directly)
       const deploy = await createMintNFTDeploy(publicKey);
       
       // Convertir hash a hex para el log
@@ -264,7 +264,7 @@ export function MintButton({
         jsonLength: deployJsonString.length,
       });
       
-      // Paso 3: Obtener el hash del deploy para referencia y validación
+      // Step 3: Get deploy hash for reference and validation
       let deployHash: string;
       if (deploy.hash && typeof (deploy.hash as any).toHex === 'function') {
         deployHash = (deploy.hash as any).toHex();
@@ -282,7 +282,7 @@ export function MintButton({
         hashLength: deployHash.length,
       });
       
-      // Paso 4: Firmar el deploy usando wallet.sign() con el JSON completo
+      // Step 4: Sign deploy using wallet.sign() with complete JSON
       // Casper Wallet puede retornar el deploy firmado completo o solo la firma
       const wallet = getCasperWallet();
       if (!wallet) {
@@ -366,7 +366,7 @@ export function MintButton({
 
       setState('sponsoring');
 
-      // Paso 4: Convertir el deploy a JSON para enviar al servidor
+      // Step 4: Convert deploy to JSON to send to server
       // DeployUtil.deployToJson puede retornar string o objeto
       const deployJsonRaw = DeployUtil.deployToJson(deploy);
       let deployJson: any;
@@ -391,7 +391,7 @@ export function MintButton({
         hasPayment: !!deployJson.deploy?.payment || !!deployJson.payment,
       });
 
-      // Paso 5: Enviar POST a /api/sponsor con deployJson, signer y signature
+      // Step 5: Send POST to /api/sponsor with deployJson, signer and signature
       const response = await fetch('/api/sponsor', {
         method: 'POST',
         headers: {
@@ -549,7 +549,7 @@ export function MintButton({
         </div>
       </div>
 
-      {/* Botón de mint */}
+      {/* Mint button */}
       <button
         onClick={handleMint}
         disabled={isDisabled() || !nftName.trim()}
