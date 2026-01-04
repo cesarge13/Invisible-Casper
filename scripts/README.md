@@ -1,12 +1,12 @@
-# Scripts de Deployment
+# Deployment Scripts
 
-Esta carpeta contiene scripts para desplegar contratos inteligentes en la red Casper.
+This folder contains scripts to deploy smart contracts on the Casper network.
 
 ## Deploy CEP-78 NFT Contract
 
-### Requisitos Previos
+### Prerequisites
 
-1. **Variables de entorno configuradas** en `.env.local`:
+1. **Environment variables configured** in `.env.local`:
    ```bash
    NODE_ADDRESS=https://rpc.testnet.casperlabs.io
    NETWORK_NAME=casper-test
@@ -14,91 +14,90 @@ Esta carpeta contiene scripts para desplegar contratos inteligentes en la red Ca
    SPONSOR_PRIVATE_KEY=ed25519:...
    ```
 
-2. **Archivo WASM del contrato** en `contracts/cep78.wasm`:
-   - Ver `contracts/README.md` para instrucciones de cómo obtenerlo
+2. **Contract WASM file** in `contracts/cep78.wasm`:
+   - See `contracts/README.md` for instructions on how to obtain it
 
-3. **Balance suficiente** en la cuenta del sponsor para pagar los fees de deployment
+3. **Sufficient balance** in the sponsor account to pay deployment fees
 
-### Ejecutar el Script
+### Run the Script
 
 ```bash
 pnpm deploy:cep78
 ```
 
-O directamente con tsx:
+Or directly with tsx:
 
 ```bash
 pnpm tsx scripts/deploy-cep78.ts
 ```
 
-### Qué hace el script
+### What the script does
 
-1. ✅ Lee las variables de entorno
-2. ✅ Carga la clave privada del sponsor
-3. ✅ Crea un deploy de instalación con los argumentos:
+1. ✅ Reads environment variables
+2. ✅ Loads the sponsor private key
+3. ✅ Creates an installation deploy with arguments:
    - `collection_name`: "GaslessGifterNFT"
    - `collection_symbol`: "GFT"
    - `total_token_supply`: 10000
    - `ownership_mode`: Transferable (0)
-4. ✅ Firma el deploy con la clave del sponsor
-5. ✅ Envía el deploy a la red
-6. ✅ Espera el procesamiento y obtiene el contract hash
-7. ✅ Guarda el contract hash en `lib/casper/contract.ts`
+4. ✅ Signs the deploy with the sponsor key
+5. ✅ Sends the deploy to the network
+6. ✅ Waits for processing and gets the contract hash
+7. ✅ Saves the contract hash in `lib/casper/contract.ts`
 
-### Salida Esperada
+### Expected Output
 
 ```
-📋 Configuración:
+📋 Configuration:
    NODE_ADDRESS: https://rpc.testnet.casperlabs.io
    NETWORK_NAME: casper-test
    SPONSOR_PUBLIC_KEY: 01...
 
-🔑 Cargando clave del sponsor...
-✅ Clave cargada correctamente
+🔑 Loading sponsor key...
+✅ Key loaded successfully
 
-📦 Creando deploy de instalación...
-✅ Argumentos de instalación creados:
+📦 Creating installation deploy...
+✅ Installation arguments created:
    - collection_name: GaslessGifterNFT
    - collection_symbol: GFT
    - total_token_supply: 10000
    - ownership_mode: Transferable (0)
 
-✍️  Firmando deploy...
-✅ Deploy firmado
+✍️  Signing deploy...
+✅ Deploy signed
 
-📤 Enviando deploy a la red...
-✅ Deploy enviado exitosamente!
+📤 Sending deploy to network...
+✅ Deploy sent successfully!
    Deploy Hash: abc123...
 
-⏳ Esperando procesamiento del deploy...
-   (Esto puede tomar varios segundos)
+⏳ Waiting for deploy processing...
+   (This may take several seconds)
 
-🎉 ¡Deploy completado!
+🎉 Deploy completed!
 
-📊 Resultados:
+📊 Results:
    Deploy Hash: abc123...
    Contract Hash: contract-abc123...
    Package Hash: package-abc123...
 
-✅ Contract hash guardado en: lib/casper/contract.ts
+✅ Contract hash saved in: lib/casper/contract.ts
 
-🔗 Enlaces útiles:
-   Explorador: https://testnet.cspr.live/deploy/abc123...
+🔗 Useful links:
+   Explorer: https://testnet.cspr.live/deploy/abc123...
    Contract: https://testnet.cspr.live/contract/contract-abc123...
 ```
 
 ### Troubleshooting
 
-**Error: "No se encontró el archivo WASM"**
-- Asegúrate de tener el archivo `contracts/cep78.wasm`
-- Ver `contracts/README.md` para instrucciones
+**Error: "WASM file not found"**
+- Make sure you have the `contracts/cep78.wasm` file
+- See `contracts/README.md` for instructions
 
-**Error: "Faltan variables de entorno"**
-- Verifica que `.env.local` tenga todas las variables requeridas
-- Asegúrate de que el archivo esté en la raíz del proyecto
+**Error: "Missing environment variables"**
+- Verify that `.env.local` has all required variables
+- Make sure the file is in the project root
 
-**Error: "Deploy falló"**
-- Verifica que el sponsor tenga suficiente balance
-- Revisa los logs del deploy en el explorador
-- Verifica que los argumentos del contrato sean correctos
-
+**Error: "Deploy failed"**
+- Verify that the sponsor has sufficient balance
+- Check deploy logs in the explorer
+- Verify that contract arguments are correct

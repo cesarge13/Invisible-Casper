@@ -1,39 +1,38 @@
-# Contratos de Casper
+# Casper Contracts
 
-Esta carpeta contiene los archivos WASM de los contratos inteligentes de Casper.
+This folder contains WASM files for Casper smart contracts.
 
 ## CEP-78 NFT Contract
 
-Para desplegar el contrato CEP-78, necesitas el archivo WASM del contrato.
+To deploy the CEP-78 contract, you need the contract WASM file.
 
-### Obtener el contrato CEP-78
+### Get the CEP-78 Contract
 
-1. Clona el repositorio oficial:
+1. Clone the official repository:
    ```bash
    git clone https://github.com/casper-ecosystem/cep-78-enhanced-nft.git
    cd cep-78-enhanced-nft
    ```
 
-2. Compila el contrato (requiere Rust y cargo):
+2. Compile the contract (requires Rust and cargo):
    ```bash
    make build-contract
    ```
 
-3. Copia el archivo WASM compilado:
+3. Copy the compiled WASM file:
    ```bash
    cp target/wasm32-unknown-unknown/release/cep78-enhanced-nft.wasm ../Casper/contracts/cep78.wasm
    ```
 
-### Alternativa: Descargar pre-compilado
+### Alternative: Download Pre-compiled
 
-Si no quieres compilar, puedes buscar una versión pre-compilada del contrato CEP-78 en:
+If you don't want to compile, you can find a pre-compiled version of the CEP-78 contract at:
 - https://github.com/casper-ecosystem/cep-78-enhanced-nft/releases
-- O usar el contrato desde el repositorio oficial
+- Or use the contract from the official repository
 
-### Estructura esperada
+### Expected Structure
 
 ```
 contracts/
-  └── cep78.wasm  ← Archivo WASM del contrato CEP-78
+  └── cep78.wasm  ← CEP-78 contract WASM file
 ```
-

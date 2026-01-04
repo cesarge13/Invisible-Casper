@@ -1,38 +1,37 @@
-# 🔒 Seguridad y Configuración
+# 🔒 Security and Configuration
 
-## ⚠️ IMPORTANTE: Claves Privadas
+## ⚠️ IMPORTANT: Private Keys
 
-**NUNCA** compartas tus claves privadas en:
-- Código fuente
-- Repositorios públicos
-- Mensajes o chats
-- Documentación pública
+**NEVER** share your private keys in:
+- Source code
+- Public repositories
+- Messages or chats
+- Public documentation
 
-## 📝 Variables de Entorno
+## 📝 Environment Variables
 
-Todas las claves sensibles deben estar en `.env.local` que está en `.gitignore`:
+All sensitive keys must be in `.env.local` which is in `.gitignore`:
 
 ```bash
-# .env.local (NO COMMITEAR)
-SPONSOR_PRIVATE_KEY=ed25519:tu_clave_privada_aqui
-SPONSOR_PUBLIC_KEY=tu_clave_publica_aqui
+# .env.local (DO NOT COMMIT)
+SPONSOR_PRIVATE_KEY=ed25519:your_private_key_here
+SPONSOR_PUBLIC_KEY=your_public_key_here
 NODE_ADDRESS=https://rpc.testnet.casperlabs.io
 NETWORK_NAME=casper-test
-NEXT_PUBLIC_SPONSOR_PUBLIC_KEY=tu_clave_publica_aqui
+NEXT_PUBLIC_SPONSOR_PUBLIC_KEY=your_public_key_here
 ```
 
-## 🔐 Generar Nuevas Claves
+## 🔐 Generate New Keys
 
-Si necesitas generar un nuevo par de claves Ed25519 para Casper:
+If you need to generate a new Ed25519 key pair for Casper:
 
 ```bash
 node -e "const { Keys } = require('casper-js-sdk'); const keyPair = Keys.Ed25519.new(); const privateKeyHex = Buffer.from(keyPair.privateKey).toString('hex'); console.log('SPONSOR_PUBLIC_KEY=' + keyPair.publicKey.toHex()); console.log('SPONSOR_PRIVATE_KEY=ed25519:' + privateKeyHex);"
 ```
 
-## ✅ Checklist de Seguridad
+## ✅ Security Checklist
 
-- [ ] `.env.local` está en `.gitignore`
-- [ ] No hay claves hardcodeadas en el código
-- [ ] Las claves privadas solo están en `.env.local`
-- [ ] El repositorio es público solo si no contiene claves
-
+- [ ] `.env.local` is in `.gitignore`
+- [ ] No hardcoded keys in the code
+- [ ] Private keys are only in `.env.local`
+- [ ] Repository is public only if it doesn't contain keys

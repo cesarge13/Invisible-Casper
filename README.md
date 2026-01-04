@@ -1,140 +1,140 @@
 # Invisible Casper
 
-Permite que cualquier usuario entre y ejecute acciones on-chain —como mintear un NFT— sin pagar gas ni tener tokens.
+Allows any user to enter and execute on-chain actions —such as minting an NFT— without paying gas or having tokens.
 
-## 🚀 Características
+## 🚀 Features
 
-- **NFT Minting Gasless**: Mintea NFTs sin pagar fees de gas
-- **Sistema de Patrocinio**: El servidor paga automáticamente los fees de las transacciones
-- **Integración con Casper Wallet**: Soporte completo para Casper Wallet y CSPR.click
-- **Dashboard Interactivo**: Interfaz moderna para gestionar tus NFTs y transferencias
+- **NFT Minting Gasless**: Mint NFTs without paying gas fees
+- **Sponsorship System**: Server automatically pays transaction fees
+- **Casper Wallet Integration**: Full support for Casper Wallet and CSPR.click
+- **Interactive Dashboard**: Modern interface to manage your NFTs and transfers
 
-## 🛠️ Tecnologías
+## 🛠️ Technologies
 
-- **Next.js 14** con App Router
-- **TypeScript** para type safety
-- **Tailwind CSS** para estilos
-- **Casper JS SDK** para interacción con la blockchain
-- **CEP-78** para estándar de NFTs
+- **Next.js 14** with App Router
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **Casper JS SDK** for blockchain interaction
+- **CEP-78** for NFT standard
 
 ## 📦 Getting Started
 
-### Prerrequisitos
+### Prerequisites
 
 - Node.js 18+ 
-- pnpm (o npm/yarn)
-- Casper Wallet instalado en tu navegador
+- pnpm (or npm/yarn)
+- Casper Wallet installed in your browser
 
-### Instalación
+### Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
 git clone https://github.com/cesarge13/Invisible-Casper.git
 cd Invisible-Casper
 ```
 
-2. Instala las dependencias:
+2. Install dependencies:
 ```bash
 pnpm install
 ```
 
-3. Copia el archivo de variables de entorno:
+3. Copy the environment variables file:
 ```bash
 cp .env.local.example .env.local
 ```
 
-4. Configura tus variables de entorno en `.env.local`:
+4. Configure your environment variables in `.env.local`:
 ```env
 NODE_ADDRESS=https://rpc.testnet.casperlabs.io
 NETWORK_NAME=casper-test
-SPONSOR_PUBLIC_KEY=tu_clave_publica_del_patrocinador
-SPONSOR_PRIVATE_KEY=tu_clave_privada_del_patrocinador
+SPONSOR_PUBLIC_KEY=your_sponsor_public_key
+SPONSOR_PRIVATE_KEY=your_sponsor_private_key
 ```
 
-5. Ejecuta el servidor de desarrollo:
+5. Run the development server:
 ```bash
 pnpm dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 Invisible-Casper/
 ├── app/                    # Next.js App Router
 │   ├── api/                # API Routes
-│   │   ├── balance/        # Consulta de balance
-│   │   ├── config/          # Configuración pública
-│   │   └── sponsor/         # Sistema de patrocinio
-│   ├── dashboard/           # Dashboard principal
-│   └── page.tsx            # Página de inicio
-├── components/              # Componentes React
-│   ├── Logo.tsx            # Logo de Invisible Casper
-│   └── web3/               # Componentes Web3
-│       ├── ClickWrapper.tsx # Wrapper para CSPR.click
-│       ├── MintButton.tsx  # Botón de mint de NFTs
-│       └── WalletNav.tsx   # Navegación de wallet
-├── lib/                    # Utilidades
-│   └── casper/             # Utilidades de Casper
-│       ├── cep78.ts        # Funciones CEP-78
-│       ├── client.ts        # Cliente de Casper
-│       ├── config.ts        # Configuración
-│       ├── sponsor.ts       # Servicio de patrocinio
-│       └── walletSigning.ts # Firma de transacciones
-├── contracts/              # Contratos inteligentes
-│   └── cep78.wasm         # Contrato CEP-78
-└── scripts/               # Scripts de utilidad
+│   │   ├── balance/        # Balance query
+│   │   ├── config/         # Public configuration
+│   │   └── sponsor/        # Sponsorship system
+│   ├── dashboard/          # Main dashboard
+│   └── page.tsx            # Home page
+├── components/             # React components
+│   ├── Logo.tsx            # Invisible Casper logo
+│   └── web3/               # Web3 components
+│       ├── ClickWrapper.tsx # CSPR.click wrapper
+│       ├── MintButton.tsx  # NFT mint button
+│       └── WalletNav.tsx   # Wallet navigation
+├── lib/                    # Utilities
+│   └── casper/             # Casper utilities
+│       ├── cep78.ts        # CEP-78 functions
+│       ├── client.ts       # Casper client
+│       ├── config.ts       # Configuration
+│       ├── sponsor.ts      # Sponsorship service
+│       └── walletSigning.ts # Transaction signing
+├── contracts/              # Smart contracts
+│   └── cep78.wasm         # CEP-78 contract
+└── scripts/               # Utility scripts
 ```
 
-## 🔐 Variables de Entorno
+## 🔐 Environment Variables
 
-Ver `.env.local.example` para la lista completa de variables de entorno requeridas.
+See `.env.local.example` for the complete list of required environment variables.
 
-**Importante**: Nunca subas tu `.env.local` al repositorio. Contiene información sensible.
+**Important**: Never upload your `.env.local` to the repository. It contains sensitive information.
 
-## 🎨 Características de la UI
+## 🎨 UI Features
 
-- **Logo Animado**: Logo personalizado con animaciones
-- **Dark Mode**: Soporte completo para modo oscuro
-- **Responsive**: Diseño adaptable a todos los dispositivos
-- **Gradientes Modernos**: Diseño visual atractivo
+- **Animated Logo**: Custom logo with animations
+- **Dark Mode**: Full dark mode support
+- **Responsive**: Design adaptable to all devices
+- **Modern Gradients**: Attractive visual design
 
-## 📝 Uso
+## 📝 Usage
 
-1. **Conecta tu Wallet**: Usa el botón "Connect Wallet" en la esquina superior derecha
-2. **Ve al Dashboard**: Navega al dashboard para ver tus opciones
-3. **Mint NFTs**: Usa el botón "Mint NFT (Gas 0)" para crear NFTs sin pagar gas
-4. **Transfiere CSPR**: Realiza transferencias usando el sistema de patrocinio
+1. **Connect your Wallet**: Use the "Connect Wallet" button in the top right corner
+2. **Go to Dashboard**: Navigate to the dashboard to see your options
+3. **Mint NFTs**: Use the "Mint NFT (Gas 0)" button to create NFTs without paying gas
+4. **Transfer CSPR**: Make transfers using the sponsorship system
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-Las contribuciones son bienvenidas! Por favor:
+Contributions are welcome! Please:
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto está bajo la Licencia MIT.
+This project is licensed under the MIT License.
 
-## 🔗 Enlaces
+## 🔗 Links
 
-- [Repositorio en GitHub](https://github.com/cesarge13/Invisible-Casper)
-- [Documentación de Casper](https://docs.casper.network/)
+- [GitHub Repository](https://github.com/cesarge13/Invisible-Casper)
+- [Casper Documentation](https://docs.casper.network/)
 - [CEP-78 Standard](https://github.com/casper-ecosystem/cep-78-enhanced-nft)
 
-## ⚠️ Seguridad
+## ⚠️ Security
 
-**IMPORTANTE**: 
-- Nunca compartas tu clave privada del patrocinador
-- No subas archivos `.env.local` al repositorio
-- Usa variables de entorno seguras en producción
-- Revisa `SECURITY.md` para más información
+**IMPORTANT**: 
+- Never share your sponsor private key
+- Do not upload `.env.local` files to the repository
+- Use secure environment variables in production
+- Check `SECURITY.md` for more information
 
 ---
 
-Hecho con ❤️ para la comunidad de Casper
+Made with ❤️ for the Casper community
